@@ -1,2 +1,12 @@
-# dataViz
-This repo is for learning d3.js. More to come as the project details and scope is created. 
+
+Week 2 Homework
+===============
+
+D3 Foundations Chart
+---------------------
+
+THe attached viz creates a scatterplot using the provided dataset. 
+
+Here is an image of how it displays:
+
+![alt text](https://i.imgur.com/kFMKTAr.png "scatterplot")
