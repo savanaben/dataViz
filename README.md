@@ -5,7 +5,7 @@ The file NJ_affordableHousingByCounty.html shows the affordable housing obligati
 
 Here is an image of how it displays:
 
-![alt text](https://i.imgur.com/kFMKTAr.png "scatterplot")
+![alt text](https://i.imgur.com/LoHVmGT.png "scatterplot")
 
 
 
