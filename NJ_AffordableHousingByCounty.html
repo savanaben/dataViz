@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+          
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v6.js"></script>
+
+<style> 
+
+.axisText { 
+  font: 16px sans-serif;
+}
+
+.axisTitle { 
+  font: 16px sans-serif;
+font-weight: 700;
+}
+
+.graphTitle { 
+  font: 20px sans-serif;
+font-weight: 700;
+}
+
+.bars { 
+  border-radius: 10% 30% 50% 70%;
+  color: aquamarine;
+}
+</style>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+    
+
+<script>
+
+// set the dimensions and margins of the graph
+const margin = {top: 60, right: 30, bottom: 90, left: 130},
+    width = 800 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+const svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Parse the Data
+d3.csv("https://raw.githubusercontent.com/savanaben/dataViz/main/NJ_AffordableHousingByCounty.csv").then( function(data) {
+
+
+
+// Add graph title:
+svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", width/2 + 180)
+    .attr("y", -15)
+    .text("Affordable Housing Obligations in NJ")
+    .attr("class", "graphTitle")
+
+
+  // Add X axis
+  const x = d3.scaleLinear()
+    .domain([0, 40000])
+    .range([ .5, width]);
+  svg.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end")
+      .attr("class", "axisText")
+
+
+// Add X axis label:
+svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", width/2 + 90)
+    .attr("y", height + margin.top + 15)
+    .text("Affordable Homes Needed")
+    .attr("class", "axisTitle")
+
+
+  // Y axis
+  const y = d3.scaleBand()
+    .range([ 0, height ])
+    .domain(data.map(d => d.County))
+    .padding(.2);
+  svg.append("g")
+    .call(d3.axisLeft(y))
+    .attr("class", "axisText")
+
+   // Y axis label:
+    svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("class", "axisTitle")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left+25)
+    .attr("x", -height/2+40)
+    .text("County")
+
+
+  //Bars
+  svg.selectAll("myRect")
+    .data(data)
+    .join("rect")
+    .attr("x", x(0) )
+    .attr("y", d => y(d.County))
+    .attr("width", d => x(d.Value))
+    .attr("height", y.bandwidth())
+    .attr("class", "bars")
+    .attr("fill", "teal")
+    
+})
+
+
+</script>
