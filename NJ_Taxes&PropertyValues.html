@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+.homeValueLine {
+  fill: none;
+  stroke: #ee6c16;
+  stroke-width: 3px;
+}
+
+.propertyTaxLine {
+  fill: none;
+  stroke: #7d0072;
+  stroke-width: 3px;
+}
+
+
+.homeValueAxis text{
+  fill: rgb(187, 69, 0);
+  font: 16px sans-serif;
+}
+.homeValueAxis path{
+  stroke: rgb(197, 79, 0);
+  stroke-width:2;
+}
+.homeValueAxis line{
+  stroke: rgb(197, 79, 0);
+}
+
+.yearAxisLabel {
+  font: 16px sans-serif;
+  font-weight: 700;
+}
+
+.yearAxis {
+  stroke-width:2;
+  font: 16px sans-serif;
+}
+
+.propertyTaxAxis text{
+  fill: rgb(149, 0, 142);
+  font: 16px sans-serif;
+}
+.propertyTaxAxis line{
+  stroke: rgb(149, 0, 142);
+}
+.propertyTaxAxis path{
+  stroke: rgb(149, 0, 142);
+  stroke-width:2;
+}
+
+
+.XAxisTitle { 
+  font: 16px sans-serif;
+font-weight: 700;
+}
+
+.leftYAxisTitle { 
+font: 16px sans-serif;
+font-weight: 700;
+fill: rgb(197, 79, 0);
+}
+
+.rightYAxisTitle { 
+  font: 16px sans-serif;
+font-weight: 700;
+fill: rgb(149, 0, 142);
+}
+
+.graphTitle { 
+  font: 20px sans-serif;
+  font-weight: 700;
+  fill: rgb(26, 26, 26);
+}
+
+
+
+.grid line {
+  stroke: #949494;
+}
+
+.grid path {
+  stroke-width:1;
+}
+
+body {
+  background-color: rgb(255, 253, 245);
+}
+
+/* see webaim https://webaim.org/techniques/css/invisiblecontent/ */
+.SRonly {
+position:absolute;
+left:-10000px;
+top:auto;
+width:1px;
+height:1px;
+overflow:hidden;
+}
+
+</style>
+<body>
+  <figure>
+    <div role="img" aria-hidden="true" id="dataviz"></div>
+    <div class="SRonly">
+        <p>Shown is a chart with the title "Property Values and Taxes in Lambertville NJ."</p>
+        <ul>
+            <li>Description of chart axes. This dual axis chart includes a standard x-axis running along the bottom, and 2 y-axes running along the left and right sides. </li>
+            <li>left y-axis. The left y-axis is labeled "Average Residential Property Value (in dollars)." The axis starts at $200,000 and moves up in increments of $20,000, reaching a maximum of $380,000.</li>
+            <li>Right y-axis. The right y-axis is labeled "Average Yearly Property Taxes (in dollars)." The axis starts at $4,000 and moves up in increments of $500, reaching a maximum of $8,000.</li>
+            <li>bottom x-axis. The x-axis is labeled "Years," and starts at 2006 on the left, moving to 2020 on the right.</li>
+            <li>chart data and interpretation. The chart shows two lines which track average yearly property value and average yearly property taxes in Lambertville, NJ. The two lines start fairly far apart, but then steadily converge between 2010 to 2020. While property taxes increased at a steady linear rate across the charts time period, property values decreased from 2009 to 2014, before slowly increasing again. Overall the graph shows that property values and property taxes have not maintained the same ratio over time. </li>
+        </ul>
+        <p>End of chart description.</p>
+    </div>
+  </figure>
+</body>
+
+	
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script>
+
+// thanks to d3noob for help on a dual axis chart 
+// https://blocks.lsecities.net/d3noob/9bb90996fd0e67ba62ce871443b526fd
+
+// graph dimensions and margins
+var margin = {top: 60, right: 90, bottom: 50, left: 140},
+    width = 900 - margin.left - margin.right,
+    height = 550 - margin.top - margin.bottom;
+
+// parse the time
+var parseTime = d3.timeParse("%Y");
+
+// set the ranges
+var x = d3.scaleTime().range([0, width]);
+var leftY = d3.scaleLinear().range([height, 0]);
+var rightY = d3.scaleLinear().range([height, 0]);
+
+// define the 1st line
+var propertyLine = d3.line()
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return leftY(d.property); });
+
+// define the 2nd line
+var taxLine = d3.line()
+    .x(function(d) { return x(d.year); })
+    .y(function(d) { return rightY(d.taxes); });
+
+// append svg object and move it into position
+var svg = d3.select("#dataviz").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+//data
+//data compiled from https://www.nj.gov/dca/divisions/dlgs/resources/property_tax.html
+d3.csv("LambertvilleTaxes.csv").then(function(data) {
+
+  // format the data
+  data.forEach(function(d) {
+      d.year = parseTime(d.year);
+      d.property = +d.property;
+      d.taxes = +d.taxes;
+  });
+
+  // Scale the data
+  x.domain(d3.extent(data, function(d) { return d.year; }));
+  leftY.domain([200000, d3.max(data, function(d) {return Math.max(d.property);})]);
+  rightY.domain([4000, d3.max(data, function(d) {return Math.max(d.taxes); })]);
+
+
+
+// gridlines in x axis function 
+// https://bl.ocks.org/d3noob/566424623105398bc614f3cd89f87259
+
+function make_x_gridlines() {		
+    return d3.axisBottom(x)
+        .ticks(5)
+}
+
+  // add the X gridlines
+  // https://bl.ocks.org/d3noob/566424623105398bc614f3cd89f87259
+  
+  svg.append("g")			
+      .attr("class", "grid")
+      .attr("transform", "translate(0," + height + ")")
+      .call(make_x_gridlines()
+          .tickSize(-height)
+          .tickFormat("")
+      )
+
+
+  // Add the propertyLine
+  svg.append("path")
+      .data([data])
+      .attr("class", "homeValueLine")
+      .attr("d", propertyLine);
+
+  // Add the taxLine
+  svg.append("path")
+      .data([data])
+      .attr("class", "propertyTaxLine")
+      .attr("d", taxLine);
+
+
+// Add graph title:
+svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", width/2 + 220)
+    .attr("y", -25)
+    .text("Property Values and Taxes In Lambertville, NJ")
+    .attr("class", "graphTitle")
+
+
+  // Add the X Axis
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .attr("class", "yearAxis")
+      .call(d3.axisBottom(x));
+      
+
+// Add X axis label:
+svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("class", "yearAxisLabel")
+    .attr("x", width/2 + 20)
+    .attr("y", height + margin.bottom)
+    .text("Year")
+
+
+  // left y axis
+  svg.append("g")
+      .attr("class", "homeValueAxis")
+    
+      .call(d3.axisLeft(leftY));
+ 
+  
+  // left y axis label:
+    svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("class", "leftYAxisTitle")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left+50)
+    .attr("x", -height/2+174)
+    .text("Average Residential Property Value (dollars)")
+   // left y axis label line thing:
+   svg.append("line")
+    .attr("x1",-95)
+    .attr("y1",393)
+    .attr("x2",-95)
+    .attr("y2",406)
+    .style("stroke", "#ee6c16")
+    .style("stroke-width", "3")
+    .style("stroke-linecap", "round")
+
+
+
+  // right y axis
+  svg.append("g")
+      .attr("class", "propertyTaxAxis")
+      .attr("transform", "translate( " + width + ", 0 )")
+      .call(d3.axisRight(rightY));
+
+  // right y axis label:
+  svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("class", "rightYAxisTitle")
+    .attr("transform", "rotate(-90)")
+    .attr("y", width+margin.right-10)
+    .attr("x", -height/2+157)
+    .text("Average Yearly Property Taxes (dollars)")
+    // right y axis label line thing:
+    svg.append("line")
+    .attr("x1",745)
+    .attr("y1",373)
+    .attr("x2",745)
+    .attr("y2",386)
+    .style("stroke", "rgb(149, 0, 142)")
+    .style("stroke-width", "3")
+    .style("stroke-linecap", "round")
+
+
+
+});
+
+</script>
+</body>
