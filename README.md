@@ -1,4 +1,17 @@
 
+
+Week 8 Homework
+===============
+For week 8 I created a donut chart that coveys the total affordable housing needed in NJ. While donut charts are a bit divisive, I thought this usage was more appropriate given the wedges are a part of a whole, and the mainline takeaway is the total listed in the center. I believe the wedges act as a nice secondary exploration of the data, and communicate both the general consistency of the Mount Laurel Doctrine (each year range requires about the same amount of new homes be built), and the dual breakup between new homes needing to be built vs. existing homes needing to be fixed.  
+
+Here is an image of how it displays:
+
+![alt text](affordableHousingDONUT.png "donut chart")
+
+
+
+
+
 Week 5 Homework
 ===============
 For this week's homework I focused on making week 4's graph as accessible as possible by applying the following techniques. 

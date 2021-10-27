@@ -2,15 +2,53 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Pie and Doughnut</title>
+        <title>Total Affordable Housing Needs in NJ</title>
         <script type="text/javascript" src= "https://d3js.org/d3.v7.min.js"></script>
         <style type="text/css">
             
             .labels{
-            font-size: 14px;
-            font-weight: normal;
+            font-size: 16px;
+            font-weight: 400;
             font-family: sans-serif;
+            fill: rgb(255, 255, 255);
+            visibility: hidden;
           }
+   
+          .graphTitle { 
+            font: 22px sans-serif;
+          font-weight: 700;
+          }
+          .wedgeLabel { 
+            font: 18px sans-serif;
+          font-weight: 400;
+          }
+
+          
+          .wedgeSubLabel { 
+            font: 18px sans-serif;
+          font-weight: 400;
+          fill: rgb(88, 88, 88);
+          font-style: italic;
+          }
+          .centerText { 
+            font: 25px sans-serif;
+          font-weight: 700;
+          }
+
+          .centerTextBottom { 
+            font: 65px sans-serif;
+          font-weight: 700;
+          }
+          
+          .graphSubTitle { 
+            font: 18px sans-serif;
+          font-weight: 400;
+          }
+
+          
+
+
+
 
         </style>
     </head>
@@ -23,8 +61,8 @@
            
 
 // set the dimensions and margins of the graph
-const margin = {top: 80, right: 30, bottom: 90, left: 130},
-    width = 800 - margin.left - margin.right,
+const margin = {top: 120, right: 30, bottom: 90, left: 210},
+    width = 1000 - margin.left - margin.right,
     height = 700 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
@@ -36,36 +74,33 @@ const svg = d3.select("#my_dataviz")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
     
 
-            //Everything we are familiar with:
-            const dataset = [10, 20, 30, 5, 50, 80];
-            const myColor = d3.scaleOrdinal(d3.schemeSpectral[6]);
+            //  Data
+            const dataset = [85875, 73725, 79183, 66721];
+            73725
+            
+            //d3.csv("https://raw.githubusercontent.com/savanaben/dataViz/main/NJ_affordableHousingTotals.csv").then( function(data) {
+            
+            
+            const myColor = d3.scaleOrdinal()
+            .range(["#af4826", "#af4826", "#af4826", "#0082a5"]); 
+            856949
 
-            //Radius information
-           // const outerRadius = w/2;
-           // const innerRadius = 0; 
+            //Radius 
              const outerRadius = 250;
-            const innerRadius = 160; //to make a doughnut!
+            const innerRadius = 160; 
            
             //d3.arc()creates our wedges 
             const arcs = d3.arc()  
-                           .innerRadius(innerRadius)//required 
-                           .outerRadius(outerRadius) //required
+                           .innerRadius(innerRadius)
+                           .outerRadius(outerRadius) 
                            .cornerRadius(10);
-                           //.cornerRadius(100);
 
             //pie generator
             const pie = d3.pie()
-                            //.padAngle(.04);
-                            //.startAngle(-0.5 * Math.PI)
-                            //.endAngle(0.5 * Math.PI);
-                             // .startAngle(0 * Math.PI)
-                             // .endAngle(1 * Math.PI);
-                            // .startAngle(0 * Math.PI)
-                            // .endAngle(0.5 * Math.PI);
-                            // .startAngle(0.5 * Math.PI)
-                            // .endAngle(2 * Math.PI);
+                            .sort(null);
+ 
 
-            //Groups to build our pie chart!
+            //Groups to build pie chart
             const groups = svg.selectAll("g.arc")
                               .data(pie(dataset))//give data to our pie generator
                               .enter()
@@ -80,14 +115,104 @@ const svg = d3.select("#my_dataviz")
                  .style("stroke-width", "3px");
 
 
-            //Labels
+            //Labels (not used currently - how to add comma?)
             groups.append("text")
                   .attr("transform", d=> "translate(" + arcs.centroid(d) + ")")
                   .attr("text-anchor", "middle")
                   .attr("class", "labels")
                   .text(d=>d.value);
 
-          //if you happen to like round / doughnut charts another option is to think into how you might make a radial bar chart, another common round chart. 
+                
+                  
+
+            // Add title:
+            svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", 465)
+                .attr("y", -60)
+                .text("The Total Affordable Housing Needs in NJ")
+                .attr("class", "graphTitle")
+            // Add subtitle:
+            svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", 530)
+                .attr("y",-35)
+                .text("Broken down into four categories based on the Mount Laurel Doctrine")
+                .attr("class", "graphSubTitle")
+            
+            // Add center text top:
+            svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", 379)
+                .attr("y", 220)
+                .text("Total Homes Needed:")
+                .attr("class", "centerText")
+            // Add center text bottom:
+            svg.append("text")
+                .attr("text-anchor", "end")
+                .attr("x", 365)
+                .attr("y", 290)
+                .text("305,504")
+                .attr("class", "centerTextBottom")
+                
+// Add Wedge Labels:
+    svg.append("text")
+    .attr("text-anchor", "start")
+    .attr("x", 450)
+    .attr("y", 461)
+    .text("Build 73,725 homes")
+    .attr("class", "wedgeLabel")
+    svg.append("text")
+    .attr("text-anchor", "start")
+    .attr("x", 450)
+    .attr("y", 485)
+    .text("(2000-2015)")
+    .attr("class", "wedgeSubLabel")        
+   
+
+    svg.append("text")
+    .attr("text-anchor", "start")
+    .attr("x", 475)
+    .attr("y", 66)
+    .text("Build 85,875 homes")
+    .attr("class", "wedgeLabel") 
+    svg.append("text")
+    .attr("text-anchor", "start")
+    .attr("x", 475)
+    .attr("y", 90)
+    .text("(1987-1999)")
+    .attr("class", "wedgeSubLabel")   
+           
+    
+    svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 10)
+    .attr("y", 400)
+    .text("Build 79,183 homes")
+    .attr("class", "wedgeLabel")  
+    svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 10)
+    .attr("y", 424)
+    .text("(2016-2025)")
+    .attr("class", "wedgeSubLabel")        
+            
+
+
+    svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 30)
+    .attr("y", 56)
+    .text("Fix 66,721 homes")
+    .attr("class", "wedgeLabel")        
+    svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 30)
+    .attr("y", 80)
+    .text("(1987-2015)")
+    .attr("class", "wedgeSubLabel")         
+            
+                //   })
 
 
         </script>
