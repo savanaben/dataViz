@@ -1,3 +1,15 @@
+Week 9 Homework
+===============
+For week 9 I built on the interactive network file from our previous class to display a network of [barn swallows](https://networkrepository.com/aves-barn-swallow-non-physical.php). 
+
+This project became more about learning d3 networks vs having a completed final viz, but I'm still happy with what I learned along the way. 
+  - I learned how to convert a .edges network file to the dual csv files (nodes + links) d3 uses. This involved some open-refine aspects, like learning how you can split data into multiple columns based on the spacing (so that I could break up the .edges file into seperate columns, as raw all the data showed in 1 column). 
+  - How to add labels to nodes by grouping the node + text into a svg group. 
+  - General expansion of knowledge on how to weight links, and how the various force parameters work. 
+
+Here is a gif of how it displays:
+
+![alt text](BarnSwallowNetwork.gif "gif of barn swallow network")
 
 
 Week 8 Homework
