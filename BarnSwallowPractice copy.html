@@ -65,7 +65,6 @@
                  
                  
                   "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name, "group": +d.group}}),
-                 // "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name}}),
                   "links": files[1].map(d => { return {"source": +d.source, "target": +d.target, "weight": +d.weight}})
                 };
                  console.log(dataset)
@@ -75,9 +74,7 @@
                  var linkStrengthScale = d3.scaleLinear()
                       .range([.3, 1]);
 
-        // TESTTTT clickable nodes content 
-        var isTooltipHidden = true;
-           
+
               
 
 
@@ -127,18 +124,16 @@ var nodes = svg.selectAll("g.nodes")
                               //  .on("mouseover", mouseover)
                               //  .on("mouseout", mouseout)
                                 .on("end", dragended))
-  
+
+                                
+  .on("click", clicknode);
 
                          
   nodes.append('circle')
-      .attr("r", 7)
+      .attr("r", 10)
     //.attr("class", "node")
       .style("fill", function(d) { return color(d.group); })
  
- 
- 
-      // TESTTTT clickable nodes content 
-    .on("click", clickNode);
 
       nodes.append("text")
       .text(function(d) {
@@ -153,51 +148,34 @@ var nodes = svg.selectAll("g.nodes")
 
 
 
+  function clicknode(nodes) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-      function clickNode(nodes) {
-        console.log("click on circle")
-       // update visibility
-       isTooltipHidden = !isTooltipHidden;
-       var visibility = (isTooltipHidden) ? "hidden" : "visible";
-
-       // load tooltip content (if it changes based on node)
-       loadTooltipContent(nodes);
-       
-       if (isTooltipHidden) {
-         unPinNode(nodes);
-       }
+    const[x, y] = d3.pointer(event);
     
-       // place tooltip where cursor was
-       return tooltip.style("top", (d3.pageY -10) + "px")
-                     .style("left", (d3.pageX + 10) + "px")
-                     .style("visibility", visibility);
+  console.log("click on circle")
   
-                    //does not do anything right now..
-                     d3.event.stopPropagation();
-   }
+/*   const[x, y] = d3.pointer(event);
   
-  // reset nodes to not be pinned
-  function unPinNode(nodes) {
-     nodes.fx = null;
-     nodes.fy = null;
-  }
+  tooltip.style("left", (x)+"px")
+         .style("top", (y)+"px") */
+
+  tooltip.style("left", (x)+"px")
+         .style("top", (y)+"px")
+
+         .transition().duration(200).style("opacity", 0.9)
   
-  // add html content to tooltip
-  function loadTooltipContent(d) {
+  
+  // d3.event.stopPropagation();
+  
+  loadTooltipContent(nodes);
+}
+
+
+
+ // add html content to tooltip
+  function loadTooltipContent(nodes) {
       var htmlContent = "<div>";
-      htmlContent += "<h4>Example tooltip for " + d.name + "<\/h4>"
+      htmlContent += "<h4>Example tooltip for " + nodes.name + "<\/h4>"
       htmlContent += "<form action=\"/somedestination\">"
       htmlContent += "First name:<br>"
       htmlContent += "<input type=\"text\" name=\"firstname\" value=\"Mickey\">"
@@ -222,9 +200,18 @@ var nodes = svg.selectAll("g.nodes")
     .style("height", "200px")
     .style("background-color", "rgba(230, 242, 255, 0.8)")
     .style("border-radius", "5px")
-    .style("visibility", "hidden")
+    .style("opacity", "0")
     .text("");
 
+
+
+d3.select("body").on("click", function() {
+  console.log("click on body")
+  tooltip.style("opacity", 0)
+})
+
+
+      
 
 
 
