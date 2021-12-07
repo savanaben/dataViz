@@ -4,56 +4,106 @@
         <meta charset="utf-8">
         <title>Drag Network Example</title>
         <script type="text/javascript" src= "https://d3js.org/d3.v7.min.js"></script>
+
+
+
         <style type="text/css">
-  
+                .links line {
+                  stroke: #999;
+                  stroke-opacity: 0.6;
+                }
+                .node {
+                  fill: rgb(63, 148, 24);
+                  stroke: rgb(255, 255, 255);
+                  stroke-width: 2px;
+                }
+                .nodes circle {
+                  stroke: #fff;
+                  stroke-width: 1.5px;
+                }
 
-.links line {
-  stroke: #999;
-  stroke-opacity: 0.6;
-}
-.node {
-  fill: rgb(63, 148, 24);
-  stroke: rgb(255, 255, 255);
-  stroke-width: 2px;
-}
-.nodes circle {
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
+                .label {
+                  font-family: sans-serif;
+                  font-size: 12px;
+                  fill: #b8b8b8;
+                  font-weight: 700;
+                }
 
-.label {
-  font-family: sans-serif;
-  font-size: 12px;
-  fill: #0057bb;
-  font-weight: 700;
+                html {
+                  background-color: rgb(4, 0, 15);
+                  color: rgb(238, 238, 238);
+                }
+
+                h3 {
+                    font-family: roboto;
+                    font-size: 16px;
+                    margin: 0 0 1rem 0;
+                }
+                
+                h4 {
+                    font-family: roboto;
+                    font-size: 14px;
+                    font-weight: 400;
+                    margin: 0 0 1rem 0;
+                }
+
+                p {
+                    font-family: roboto;
+                    font-size: 12px;
+                    font-weight: 400;
+                    margin: 0 0 1rem 0;
+                }
+
+                wrapclass {
+                    font-family: roboto;
+                    font-size: 13px;
+                    margin: 0;
+                }
 
 
-}
 
         </style>
+
     </head>
     <body>
-        <svg width="1500" height="1500">
+        <svg width="1920" height="1500">
           <filter x="0" y="0" width="1" height="1" id="removebackground">
-            <feFlood flood-color="white"/>
+            <feFlood flood-color="black" flood-opacity="0.65"/>
             <feComposite in="SourceGraphic"/>
          </filter>
         </svg>
 
         <script type="text/javascript">
-           
           
-            const svg = d3.select("svg");
-            const w = 1500;
-            const h= 1500; 
-            const myColor = d3.scaleOrdinal(d3.schemeTableau10);
-            
-            
-            var color = d3.scaleOrdinal(d3.schemeSet1);
-         
 
-    
+
+            const svg = d3.select("svg");
+            const w = 1920;
+            const h= 1500; 
+          //const myColor = d3.scaleOrdinal(d3.schemeTableau10);
+            var color = d3.scaleOrdinal([`#DF1BFF`, `#00D5E2`]);
            
+           //wrap text vars
+           //top number is vertical position
+            var horizontalTreeOffset = 6;
+            var horizontalNodeOffset = horizontalTreeOffset - 0;
+            var horizontalNodeOffsetLeaf = horizontalTreeOffset + 5;
+           
+
+            // tweaks the pulling strength of the nodes based on the weight data
+            var linkStrengthScale = d3.scaleLinear()
+                .range([.3, 1]);
+
+
+            // tweaks the node size
+            var nodeSize = d3.scaleLinear()
+            .domain([0, 11]) // unit: km
+            .range([4, 10]); // unit: pixels
+            
+      
+
+
+
             Promise.all([
                 d3.csv("SF_nodes.csv"),
                 d3.csv("SF_edges.csv"),
@@ -64,18 +114,12 @@
                 const dataset = {
                  
                  
-                  "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name, "group": +d.group}}),
+                  "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name, "group": +d.group, "frequency": +d.frequency, "author": d.author, "date": d.date}}),
                   "links": files[1].map(d => { return {"source": +d.source, "target": +d.target, "weight": +d.weight}})
                 };
                  console.log(dataset)
 
 
-                  // tweaks the pulling strength of the nodes based on the weight data
-                 var linkStrengthScale = d3.scaleLinear()
-                      .range([.3, 1]);
-
-
-              
 
 
 
@@ -126,29 +170,59 @@ var nodes = svg.selectAll("g.nodes")
                                 .on("end", dragended))
 
                                 
-  .on("click", clicknode);
+  
 
                          
   nodes.append('circle')
-      .attr("r", 10)
+    //  .attr("r", 8)
+    //.attr("r", function(d) { return d.frequency * 1; })
+    .attr("r", function(d) { return nodeSize (d.frequency * 1);})
+   
+  
+
     //.attr("class", "node")
       .style("fill", function(d) { return color(d.group); })
- 
+      .on("click", clicknode);
 
-      nodes.append("text")
+/*       nodes.append("text")
       .text(function(d) {
         return d.name;
       })
       .attr("class", "label")
-      .attr('x', 8)
+      .attr('x', 12)
       .attr('y', 4)
-      .attr("filter", "url(#removebackground)");
+      .attr("filter", "url(#removebackground)"); */
 
 
+      nodes.append("svg:foreignObject")
+              .attr("width", "100")
+              .attr("height", "50")
+              .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
+              //the second number here is vertical position
+              .attr("y", function(d) { return d.children || d._children ? -40 : -8; })
+              .style("font", "normal 12px Arial")
+              .style("text-shadow", "0 0 3px #000000, 0 0 3px #000000, 0 0 3px #000000,0 0 3px #000000, 0 0 5px #000000, 0 0 5px #000000, 0 0 5px #000000")
 
 
+            .append("xhtml:wrapclass")
+              .attr("xmlns", "http://www.w3.org/1999/xhtml")
+              .html(function(d){ return  d.name ; });
 
-  function clicknode(nodes) {
+   /*  nodes.append("svg:foreignObject")
+              .attr("width", "140")
+              .attr("height", "40")
+              .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
+              .attr("y", function(d) { return d.children || d._children ? -40 : -17; })
+              .style("font", "normal 12px Arial")
+              .style("background-color", "rgba(0, 0, 0, 0.67)")
+            .append("xhtml:body")
+              .attr("xmlns", "http://www.w3.org/1999/xhtml")
+              .html(function(d){ return  d.name ; });
+
+ */
+
+
+  function clicknode(event, nodes) {
 
     const[x, y] = d3.pointer(event);
     
@@ -159,10 +233,15 @@ var nodes = svg.selectAll("g.nodes")
   tooltip.style("left", (x)+"px")
          .style("top", (y)+"px") */
 
-  tooltip.style("left", (x)+"px")
-         .style("top", (y)+"px")
+/*   tooltip.style("left", (x)+"px")
+         .style("top", (y)+"px") */
 
-         .transition().duration(200).style("opacity", 0.9)
+  tooltip
+    .style("left", `${event.layerX}px`)
+    .style("top", `${event.layerY}px`)
+
+
+    .transition().duration(200).style("opacity", 1);
   
   
   // d3.event.stopPropagation();
@@ -175,31 +254,32 @@ var nodes = svg.selectAll("g.nodes")
  // add html content to tooltip
   function loadTooltipContent(nodes) {
       var htmlContent = "<div>";
-      htmlContent += "<h4>Example tooltip for " + nodes.name + "<\/h4>"
-      htmlContent += "<form action=\"/somedestination\">"
-      htmlContent += "First name:<br>"
-      htmlContent += "<input type=\"text\" name=\"firstname\" value=\"Mickey\">"
-      htmlContent += "<br>"
-      htmlContent += "Last name:<br>"
-      htmlContent += "<input type=\"text\" name=\"lastname\" value=\"Mouse\">"
-      htmlContent += "<br><br>"
-      htmlContent += "<input type=\"submit\" value=\"Submit\">"
-      htmlContent += "<\/form>"
+      htmlContent += "<h3>" + nodes.name + "<\/h3>"
+      htmlContent += "<h4>by " + nodes.author + "<\/h4>"
+      htmlContent += "<p>Published " + nodes.date + "<\/p>"
+
+
+    //  htmlContent += "<br>"
+    //  htmlContent += "<br><br>"
       htmlContent += "<\/div>"
       tooltip.html(htmlContent);
   }
-  
+
+
+
   // add tooltip to HTML body
   var tooltip = d3.select("body")
     .append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
-    .style("padding", "10px")
+    .style("padding", "12px")
     .style("z-index", "10")
-    .style("width", "300px")
-    .style("height", "200px")
-    .style("background-color", "rgba(230, 242, 255, 0.8)")
-    .style("border-radius", "5px")
+    .style("width", "200px")
+    .style("height", "110px")
+    .style("background-color", "#090020")
+    .style("border-radius", "6px")
+    .style("box-shadow", "0px 2px 5px 1px rgba(0,0,0,0.24")
+
     .style("opacity", "0")
     .text("");
 
@@ -296,7 +376,7 @@ d3.select("body").on("click", function() {
 
             //Drag events
             function dragstarted(event) {
-              if (!event.active) simulation.alphaTarget(.00001).restart();
+              if (!event.active) simulation.alphaTarget(.002).restart();
               event.subject.fx = event.subject.x;
               event.subject.fy = event.subject.y;
             }
@@ -307,7 +387,7 @@ d3.select("body").on("click", function() {
             }
             
             function dragended(event) {
-              if (!event.active) simulation.alphaTarget(.00001);
+              if (!event.active) simulation.alphaTarget(.002);
               event.subject.fx = null;
               event.subject.fy = null;
             }
