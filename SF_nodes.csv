@@ -1,16 +1,16 @@
 ﻿id,name,group,frequency,author,date
-0,DUMMY,2,,,
-1,"robots, androids, or AI computers",2,,,
-2,battles,2,,,
-3,romance,2,,,
-4,magic,2,,,
-5,time travel,2,,,
-6,interplanetary,2,,,
-7,multi-species,2,,,
-8,beasts,2,,,
-9,psychic powers,2,,,
-10,novel technology (not Aiish),2,,,
-11,After Catastrophe,2,,,
+0,DUMMY,2,11,,
+1,"robots, androids, or AI computers",2,11,,
+2,battles,2,11,,
+3,romance,2,11,,
+4,magic,2,11,,
+5,time travel,2,11,,
+6,interplanetary,2,11,,
+7,multi-species,2,11,,
+8,beasts,2,11,,
+9,psychic powers,2,11,,
+10,novel technology (not Aiish),2,11,,
+11,After Catastrophe,2,11,,
 12,Frankenstein,1,6,Mary Shelley,1818
 13,Twenty Thousand Leagues Under the Sea,1,7,Jules Vernes,1870
 14,Journey to the Center of the Earth,1,2,Jules Verne,1874

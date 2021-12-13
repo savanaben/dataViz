@@ -5,9 +5,12 @@
         <title>Drag Network Example</title>
         <script type="text/javascript" src= "https://d3js.org/d3.v7.min.js"></script>
 
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
 
         <style type="text/css">
+                
                 .links line {
                   stroke: #999;
                   stroke-opacity: 0.6;
@@ -55,18 +58,24 @@
                 }
 
                 wrapclass {
-                    font-family: roboto;
-                    font-size: 13px;
+                    font-family: Roboto Condensed;
+                    color: rgb(212, 234, 238);
+                    font-size: 15px;
                     margin: 0;
+                    text-shadow:0 0 3px #000000, 0 0 3px #000000, 0 0 3px #000000,0 0 3px #000000, 0 0 5px #000000, 0 0 5px #000000, 0 0 5px #000000;
+                    cursor: move;
                 }
 
+                .dots {
+                    cursor: pointer;
+                  }
 
 
         </style>
 
     </head>
     <body>
-        <svg width="1920" height="1500">
+        <svg width="1800" height="1600">
           <filter x="0" y="0" width="1" height="1" id="removebackground">
             <feFlood flood-color="black" flood-opacity="0.65"/>
             <feComposite in="SourceGraphic"/>
@@ -78,14 +87,14 @@
 
 
             const svg = d3.select("svg");
-            const w = 1920;
-            const h= 1500; 
+            const w = 1800;
+            const h= 1600; 
           //const myColor = d3.scaleOrdinal(d3.schemeTableau10);
             var color = d3.scaleOrdinal([`#DF1BFF`, `#00D5E2`]);
            
            //wrap text vars
            //top number is vertical position
-            var horizontalTreeOffset = 6;
+            var horizontalTreeOffset = 8;
             var horizontalNodeOffset = horizontalTreeOffset - 0;
             var horizontalNodeOffsetLeaf = horizontalTreeOffset + 5;
            
@@ -94,15 +103,12 @@
             var linkStrengthScale = d3.scaleLinear()
                 .range([.3, 1]);
 
-
             // tweaks the node size
             var nodeSize = d3.scaleLinear()
             .domain([0, 11]) // unit: km
-            .range([4, 10]); // unit: pixels
+            .range([4, 12]); // unit: pixels
             
-      
-
-
+ 
 
             Promise.all([
                 d3.csv("SF_nodes.csv"),
@@ -131,9 +137,10 @@
             return linkStrengthScale(d.weight);
         }))
                        
-                               
+                                // turn this on to keep the sim running
+                              // .alphaTarget(.002)
                                 .force("center", d3.forceCenter().x(w/2).y(h/2).strength(.05))
-                                .force("collide",d3.forceCollide().radius(80).strength(.07));
+                                .force("collide",d3.forceCollide().radius(90).strength(.07));
 
 
             // links (lines) -- note: .join() instead of .enter().append()
@@ -172,17 +179,26 @@ var nodes = svg.selectAll("g.nodes")
                                 
   
 
-                         
+     //visible node                    
   nodes.append('circle')
-    //  .attr("r", 8)
+    //.attr("r", 8)
     //.attr("r", function(d) { return d.frequency * 1; })
-    .attr("r", function(d) { return nodeSize (d.frequency * 1);})
-   
-  
-
+      .attr("r", function(d) { return nodeSize (d.frequency * 1);})
+      .attr("class", "dots")
     //.attr("class", "node")
       .style("fill", function(d) { return color(d.group); })
-      .on("click", clicknode);
+
+// touch target node
+      nodes.append('circle')
+      .attr("r", 20)  
+      .attr("class", "dots")
+      .style("opacity", 0) 
+      .on("click", clicknode) 
+         
+      //hover over to highlight connected nodes (does not work)
+      //  .on("mouseover", mouseOver(.1))
+       // .on("mouseout", mouseOut);
+
 
 /*       nodes.append("text")
       .text(function(d) {
@@ -196,15 +212,19 @@ var nodes = svg.selectAll("g.nodes")
 
       nodes.append("svg:foreignObject")
               .attr("width", "100")
-              .attr("height", "50")
+
+              //not working
+     /*          .on('click', function(){
+        // the svg click listener will not fire
+        d3.event.stopPropagation()
+        console.log("blue captured the event! svg.on('click') wont get called now")
+      })
+       */
+              .attr("height", "55")
               .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
               //the second number here is vertical position
-              .attr("y", function(d) { return d.children || d._children ? -40 : -8; })
-              .style("font", "normal 12px Arial")
-              .style("text-shadow", "0 0 3px #000000, 0 0 3px #000000, 0 0 3px #000000,0 0 3px #000000, 0 0 5px #000000, 0 0 5px #000000, 0 0 5px #000000")
-
-
-            .append("xhtml:wrapclass")
+              .attr("y", function(d) { return d.children || d._children ? -40 : -9; })
+              .append("xhtml:wrapclass")
               .attr("xmlns", "http://www.w3.org/1999/xhtml")
               .html(function(d){ return  d.name ; });
 
@@ -241,8 +261,10 @@ var nodes = svg.selectAll("g.nodes")
     .style("top", `${event.layerY}px`)
 
 
-    .transition().duration(200).style("opacity", 1);
-  
+    
+    .transition().duration(1).style("visibility", "visible")
+    .transition().duration(300).style("opacity", 1)
+
   
   // d3.event.stopPropagation();
   
@@ -279,15 +301,66 @@ var nodes = svg.selectAll("g.nodes")
     .style("background-color", "#090020")
     .style("border-radius", "6px")
     .style("box-shadow", "0px 2px 5px 1px rgba(0,0,0,0.24")
-
+    .style("border", "6px solid #1763ed")
     .style("opacity", "0")
     .text("");
+
+
+
+
+/* 
+
+  // build a dictionary of nodes that are linked
+  var linkedByIndex = {};
+    links.forEach(function(d) {
+        linkedByIndex[d.source.index + "," + d.target.index] = 1;
+    });
+
+    // check the dictionary to see if nodes are linked
+    function isConnected(a, b) {
+        return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
+    }
+
+    // fade nodes on hover
+    function mouseOver(opacity) {
+        return function(d) {
+            // check all other nodes to see if they're connected
+            // to this one. if so, keep the opacity at 1, otherwise
+            // fade
+            node.style("stroke-opacity", function(o) {
+                thisOpacity = isConnected(d, o) ? 1 : opacity;
+                return thisOpacity;
+            });
+            node.style("fill-opacity", function(o) {
+                thisOpacity = isConnected(d, o) ? 1 : opacity;
+                return thisOpacity;
+            });
+            // also style link accordingly
+            link.style("stroke-opacity", function(o) {
+                return o.source === d || o.target === d ? 1 : opacity;
+            });
+            link.style("stroke", function(o) {
+                return o.source === d || o.target === d ? o.source.colour : "#ddd";
+            });
+        };
+    }
+
+    function mouseOut() {
+        node.style("stroke-opacity", 1);
+        node.style("fill-opacity", 1);
+        link.style("stroke-opacity", 1);
+        link.style("stroke", "#ddd");
+    }
+
+ */
 
 
 
 d3.select("body").on("click", function() {
   console.log("click on body")
   tooltip.style("opacity", 0)
+  tooltip.style("visibility", "hidden")
+
 })
 
 
