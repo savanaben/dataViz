@@ -4,10 +4,12 @@
         <meta charset="utf-8">
         <title>Drag Network Example</title>
         <script type="text/javascript" src= "https://d3js.org/d3.v7.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
 
         <style type="text/css">
                 
@@ -37,61 +39,187 @@
                   color: rgb(238, 238, 238);
                 }
 
+                 h2 {
+                    font-family: roboto;
+                    font-size: 20px;
+                    margin: 0 0 0.3rem 0;
+                    color: #7afff3 !important;
+                }
+
                 h3 {
                     font-family: roboto;
-                    font-size: 16px;
-                    margin: 0 0 1rem 0;
+                    font-size: 22px;
+                    line-height: 1.08;
+                    margin: 0 0 0.3rem 0;
+                    color: #7afff3;
+                    font-weight: 500;
                 }
                 
                 h4 {
                     font-family: roboto;
-                    font-size: 14px;
+                    font-size: 16px;
+                    color: rgb(226, 226, 226)!important;
                     font-weight: 400;
+                    margin: 0 0 0.3rem 0;
+                }
+
+                h5 {
+                   font-family: roboto;
+                    font-size: 14px;
+                    color: rgb(226, 226, 226)!important;
+                    font-weight: 400;
+                    font-style: italic;
                     margin: 0 0 1rem 0;
                 }
 
                 p {
                     font-family: roboto;
-                    font-size: 12px;
+                    font-size: 18px;
+                    color: rgb(226, 226, 226);
                     font-weight: 400;
                     margin: 0 0 1rem 0;
                 }
 
+                
+                .links {
+                    color:#bb7cff;
+                    font-size: 14px;
+                    font-family: roboto;
+                }
+
+
                 wrapclass {
                     font-family: Roboto Condensed;
-                    color: rgb(212, 234, 238);
-                    font-size: 15px;
+                    color: rgb(184, 229, 238);
+                    line-height: 1.2;
                     margin: 0;
                     text-shadow:0 0 3px #000000, 0 0 3px #000000, 0 0 3px #000000,0 0 3px #000000, 0 0 5px #000000, 0 0 5px #000000, 0 0 5px #000000;
-                    cursor: move;
+                    cursor: pointer;
                 }
 
                 .dots {
                     cursor: pointer;
                   }
 
+                  .svgContainer {
+                    display: block;
+                    margin: auto;
+                  }
+
+                  .card {
+                    background-color: #000;
+                  }
+
+
+                  .tooltips2 {
+                    background-color: #090020;
+                    padding: 1rem;
+                    border-radius: 6px;
+                    box-shadow: "0px 0px 29px 15px #000000";
+                    border: 4px solid #1763ed;
+                  }
+                  
+
+            .tooltip-overlay {
+              position: absolute;
+              width: 100vw;
+              height: 100vh;
+              top: 0;
+              left: 0;
+              opacity: 0;
+              display: none;
+              z-index: 1;
+            }
+
+
 
         </style>
 
     </head>
     <body>
-        <svg width="1800" height="1600">
+        
+      
+      
+      <div class="totalWidth columns p-3">
+        <div class="column is-3-desktop is-2-tablet">
+       </div> 
+       <div class="column is-6-desktop is-8-tablet">   
+      <div class="card mt-4">
+       <div class="card-content">
+         <div class="content">
+           <h2 class="title is-2 has-text-centered"	>
+             Science Fiction Explorer
+           </h2>
+     <p>
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially un 
+     </p>
+         </div>
+       </div>
+     </div>
+        </div>  
+        <div class="column is-3-desktop is-2-tablet">
+       </div> 
+       </div>
+      
+      
+
+
+
+
+       
+      
+      
+      <svg class="svgContainer" width="1700" height="1450">
           <filter x="0" y="0" width="1" height="1" id="removebackground">
             <feFlood flood-color="black" flood-opacity="0.65"/>
             <feComposite in="SourceGraphic"/>
          </filter>
+         <defs>
+          <radialGradient id="gas">
+            <stop offset=".03" stop-color="#ff9786" stop-opacity=".7"/>
+            <stop offset=".94" stop-color="#ff793f" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
         </svg>
+
+
+        <div class="tooltip-overlay"></div>
+
 
         <script type="text/javascript">
           
 
 
+          $(window).click(function() {
+  //Hide the menus if visible
+});
+
+$('#clickchecker').click(function(event){
+  event.stopPropagation();
+});
+
+
+
+
+
             const svg = d3.select("svg");
-            const w = 1800;
-            const h= 1600; 
+            const w = 1700;
+            const h= 1450; 
           //const myColor = d3.scaleOrdinal(d3.schemeTableau10);
-            var color = d3.scaleOrdinal([`#DF1BFF`, `#00D5E2`]);
+            var color = d3.scaleOrdinal([`#000000`, `#00BEDD`]);
            
+            var strokes = d3.scaleOrdinal([`#FFBDAE`, `#000000`]);
+            var strokesWidth = d3.scaleOrdinal([2, 0]);
+
+            // for gas nodes
+            var category = d3.scaleOrdinal([45, 1]);
+
+            var fontSize = d3.scaleOrdinal([`20px`, `15px`]);
+            var fontColor = d3.scaleOrdinal([`#ffd9b9`, ``]);
+
+
+            var labelWidth = d3.scaleOrdinal([`150px`, `100px`]);
+
            //wrap text vars
            //top number is vertical position
             var horizontalTreeOffset = 8;
@@ -105,7 +233,7 @@
 
             // tweaks the node size
             var nodeSize = d3.scaleLinear()
-            .domain([0, 11]) // unit: km
+            .domain([0, 11]) // unit: 
             .range([4, 12]); // unit: pixels
             
  
@@ -120,7 +248,7 @@
                 const dataset = {
                  
                  
-                  "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name, "group": +d.group, "frequency": +d.frequency, "author": d.author, "date": d.date}}),
+                  "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name, "group": +d.group, "frequency": +d.frequency, "author": d.author, "goodreads": d.goodreads,  "wikipedia": d.wikipedia, "date": d.date}}),
                   "links": files[1].map(d => { return {"source": +d.source, "target": +d.target, "weight": +d.weight}})
                 };
                  console.log(dataset)
@@ -138,8 +266,8 @@
         }))
                        
                                 // turn this on to keep the sim running
-                              // .alphaTarget(.002)
-                                .force("center", d3.forceCenter().x(w/2).y(h/2).strength(.05))
+                                .alphaTarget(.002)
+                                .force("center", d3.forceCenter().x(w/2.05).y(h/2).strength(.05))
                                 .force("collide",d3.forceCollide().radius(90).strength(.07));
 
 
@@ -172,28 +300,54 @@ var nodes = svg.selectAll("g.nodes")
   .call(d3.drag() // using .call() to call our drag event
                                 .on("start", dragstarted)
                                 .on("drag", dragged)
-                              //  .on("mouseover", mouseover)
-                              //  .on("mouseout", mouseout)
+
                                 .on("end", dragended))
 
+                            //    .on("mouseover", mouseover)
+                            //     .on("mouseout", mouseout)
                                 
   
 
-     //visible node                    
+
+     //visible node gas                    
+     nodes.append('ellipse')
+    //.attr("r", 8)
+    //.attr("r", function(d) { return d.frequency * 1; })
+      .attr("rx", function(d) { return category (d.group);})
+      .attr("ry", function(d) { return category (d.group);})
+      .attr("class", "dots")
+      .attr("fill", "url(#gas)")
+    //.attr("class", "node")
+    //  .style("fill", function(d) { return color(d.group); })
+
+
+
+
+     //fill nodes                 
   nodes.append('circle')
     //.attr("r", 8)
     //.attr("r", function(d) { return d.frequency * 1; })
       .attr("r", function(d) { return nodeSize (d.frequency * 1);})
       .attr("class", "dots")
+      .attr("stroke", function(d) { return strokes(d.group); })
+      .attr("stroke-width", function(d) { return strokesWidth(d.group); })
     //.attr("class", "node")
       .style("fill", function(d) { return color(d.group); })
 
+
+
 // touch target node
       nodes.append('circle')
-      .attr("r", 20)  
+      .attr("r", 25)  
       .attr("class", "dots")
       .style("opacity", 0) 
+      .style("fill", "#00bedd") 
       .on("click", clicknode) 
+      .style("z-index", "10")
+
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout)
+
          
       //hover over to highlight connected nodes (does not work)
       //  .on("mouseover", mouseOver(.1))
@@ -210,16 +364,9 @@ var nodes = svg.selectAll("g.nodes")
       .attr("filter", "url(#removebackground)"); */
 
 
-      nodes.append("svg:foreignObject")
+      // original LABELS WORKING
+ /*      nodes.append("svg:foreignObject")
               .attr("width", "100")
-
-              //not working
-     /*          .on('click', function(){
-        // the svg click listener will not fire
-        d3.event.stopPropagation()
-        console.log("blue captured the event! svg.on('click') wont get called now")
-      })
-       */
               .attr("height", "55")
               .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
               //the second number here is vertical position
@@ -227,6 +374,24 @@ var nodes = svg.selectAll("g.nodes")
               .append("xhtml:wrapclass")
               .attr("xmlns", "http://www.w3.org/1999/xhtml")
               .html(function(d){ return  d.name ; });
+ */
+
+      nodes.append("svg:foreignObject")
+              .attr("width", function(d) { return labelWidth(d.group); })
+              .attr("height", "55")
+              .on("click", clicknode) 
+              .style("line-height", "1")
+              .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
+              //the second number here is vertical position
+              .attr("y", function(d) { return d.children || d._children ? -40 : -9; })
+              .append("xhtml:wrapclass")
+              .style("font-size", function(d) { return fontSize(d.group); })
+              .style("color", function(d) { return fontColor(d.group); })
+              .attr("xmlns", "http://www.w3.org/1999/xhtml")
+              .html(function(d){ return  d.name ; });
+
+
+
 
    /*  nodes.append("svg:foreignObject")
               .attr("width", "140")
@@ -256,29 +421,47 @@ var nodes = svg.selectAll("g.nodes")
 /*   tooltip.style("left", (x)+"px")
          .style("top", (y)+"px") */
 
+   // test build tooltip overlay click to close
+  tooltipBg.style("display", "block");
+
   tooltip
     .style("left", `${event.layerX}px`)
     .style("top", `${event.layerY}px`)
-
-
-    
     .transition().duration(1).style("visibility", "visible")
     .transition().duration(300).style("opacity", 1)
 
-  
+    .style("display", "block");
+
   // d3.event.stopPropagation();
+     loadTooltipContent(nodes);
+}
+
+
+function clickBackground() {
+  tooltipBg.style("display", "none");
   
-  loadTooltipContent(nodes);
+
+  
+  tooltip
+    .transition()
+    .duration(300)
+    .style("opacity", 0)
+    .on("end", () => tooltip.style("display", "none"));
 }
 
 
 
  // add html content to tooltip
   function loadTooltipContent(nodes) {
-      var htmlContent = "<div>";
+      var htmlContent = "<div class=\"tooltips2\">"
+        htmlContent += "<div id=\"clickchecker\">"
       htmlContent += "<h3>" + nodes.name + "<\/h3>"
       htmlContent += "<h4>by " + nodes.author + "<\/h4>"
-      htmlContent += "<p>Published " + nodes.date + "<\/p>"
+      htmlContent += "<h5>Published " + nodes.date + "<\/h5>"
+      htmlContent += "<a class=\"links\" href=" + nodes.goodreads + ">goodreads<\/a>  |  <a class=\"links\" href=" + nodes.wikipedia + ">wikipedia<\/a>"  
+      
+      
+  
 
 
     //  htmlContent += "<br>"
@@ -294,18 +477,20 @@ var nodes = svg.selectAll("g.nodes")
     .append("div")
     .attr("class", "tooltip")
     .style("position", "absolute")
-    .style("padding", "12px")
     .style("z-index", "10")
-    .style("width", "200px")
-    .style("height", "110px")
-    .style("background-color", "#090020")
-    .style("border-radius", "6px")
-    .style("box-shadow", "0px 2px 5px 1px rgba(0,0,0,0.24")
-    .style("border", "6px solid #1763ed")
+    .style("width", "250px")
+    .style("height", "140px")
     .style("opacity", "0")
+    .style("z-index", "10")
     .text("");
 
 
+
+// test build tooltip overlay click to close
+    var tooltipBg = d3
+  .select(".tooltip-overlay")
+  .on("click", clickBackground);
+var tooltip = d3.select(".tooltip");
 
 
 /* 
@@ -355,16 +540,14 @@ var nodes = svg.selectAll("g.nodes")
  */
 
 
-
+/* 
 d3.select("body").on("click", function() {
   console.log("click on body")
   tooltip.style("opacity", 0)
   tooltip.style("visibility", "hidden")
 
 })
-
-
-      
+       */
 
 
 
@@ -447,7 +630,7 @@ d3.select("body").on("click", function() {
             });
           
 
-            //Drag events
+            //Drag events SET ALPHA TARGETS to 0.002
             function dragstarted(event) {
               if (!event.active) simulation.alphaTarget(.002).restart();
               event.subject.fx = event.subject.x;
@@ -465,19 +648,23 @@ d3.select("body").on("click", function() {
               event.subject.fy = null;
             }
   
-  // this would align with the mouseover above, but does not currently work          
-/*             function mouseover() {
-  d3.select(this).select("circle").transition()
-      .duration(750)
-      .attr("r", 16);
+//node hover over events
+            function mouseover() {
+  d3.select(this).transition()
+      .duration(250)
+      .style("opacity", .3);
 }
 
 function mouseout() {
-  d3.select(this).select("circle").transition()
-      .duration(750)
-      .attr("r", 8);
+  d3.select(this).transition()
+      .duration(250)
+      .style("opacity", 0);
 }
- */
+
+
+
+
+
 
             console.log(dataset);
            
