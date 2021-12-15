@@ -50,7 +50,7 @@
                     font-family: roboto;
                     font-size: 22px;
                     line-height: 1.08;
-                    margin: 0 0 0.3rem 0;
+                    margin: 0 0 0.5rem 0;
                     color: #7afff3;
                     font-weight: 500;
                 }
@@ -60,7 +60,7 @@
                     font-size: 16px;
                     color: rgb(226, 226, 226)!important;
                     font-weight: 400;
-                    margin: 0 0 0.3rem 0;
+                    margin: 0 0 0 0;
                 }
 
                 h5 {
@@ -277,7 +277,7 @@ $('#clickchecker').click(function(event){
                              .join("line") //join
                              .style("stroke", "#949494")
                              //.style("stroke-width", .5); 
-                             .style("stroke-width", d=> d.weight *.12); //could be set to data /connection strength 
+                             .style("stroke-width", d=> d.weight *.15); //could be set to data /connection strength 
 
              // nodes (circles) - replaced with below nodes var, which creates a svg group with the nodes and text labels. 
 /*             const nodes = svg.selectAll("circle")
@@ -425,8 +425,8 @@ var nodes = svg.selectAll("g.nodes")
   tooltipBg.style("display", "block");
 
   tooltip
-    .style("left", `${event.layerX}px`)
-    .style("top", `${event.layerY}px`)
+    .style("left", `${event.pageX}px`)
+    .style("top", `${event.pageY}px`)
     .transition().duration(1).style("visibility", "visible")
     .transition().duration(300).style("opacity", 1)
 
