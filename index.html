@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Drag Network Example</title>
         <script type="text/javascript" src= "https://d3js.org/d3.v7.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -37,8 +38,11 @@
                 html {
                   background-color: rgb(4, 0, 15);
                   color: rgb(238, 238, 238);
-                  display: flex;
+                 
                 }
+
+
+  
 
                  h2 {
                     font-family: roboto;
@@ -86,6 +90,10 @@
                     color:#bb7cff;
                     font-size: 14px;
                     font-family: roboto;
+                }
+
+                .svg-container {
+                 overflow: scroll;
                 }
 
 
@@ -169,7 +177,8 @@
 
        
       
-      
+       <div class="svg-container">
+
       <svg class="svgContainer" width="1700" height="1450">
           <filter x="0" y="0" width="1" height="1" id="removebackground">
             <feFlood flood-color="black" flood-opacity="0.65"/>
@@ -183,13 +192,18 @@
         </defs>
         </svg>
 
+      </div>
+
+
+
+
 
         <div class="tooltip-overlay"></div>
 
 
-        <script type="text/javascript">
-          
 
+
+        <script type="text/javascript">
 
           $(window).click(function() {
   //Hide the menus if visible
