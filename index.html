@@ -37,6 +37,7 @@
                 html {
                   background-color: rgb(4, 0, 15);
                   color: rgb(238, 238, 238);
+                  display: flex;
                 }
 
                  h2 {
@@ -266,7 +267,7 @@ $('#clickchecker').click(function(event){
         }))
                        
                                 // turn this on to keep the sim running
-                                .alphaTarget(.002)
+                                // .alphaTarget(.002)
                                 .force("center", d3.forceCenter().x(w/2).y(h/2).strength(.05))
                                 .force("collide",d3.forceCollide().radius(90).strength(.07));
 
@@ -344,7 +345,6 @@ var nodes = svg.selectAll("g.nodes")
       .style("fill", "#00bedd") 
       .on("click", clicknode) 
       .style("z-index", "10")
-
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
 
@@ -408,11 +408,8 @@ var nodes = svg.selectAll("g.nodes")
 
 
   function clicknode(event, nodes) {
-
     const[x, y] = d3.pointer(event);
     
-  console.log("click on circle")
-  
 /*   const[x, y] = d3.pointer(event);
   
   tooltip.style("left", (x)+"px")
@@ -429,7 +426,6 @@ var nodes = svg.selectAll("g.nodes")
     .style("top", `${event.pageY}px`)
     .transition().duration(1).style("visibility", "visible")
     .transition().duration(300).style("opacity", 1)
-
     .style("display", "block");
 
   // d3.event.stopPropagation();
@@ -437,11 +433,16 @@ var nodes = svg.selectAll("g.nodes")
 }
 
 
+
+// test build tooltip overlay click to close
+var tooltipBg = d3.select(".tooltip-overlay")
+                  .on("click", clickBackground);
+var tooltip = d3.select(".tooltip");
+
+
+
 function clickBackground() {
   tooltipBg.style("display", "none");
-  
-
-  
   tooltip
     .transition()
     .duration(300)
@@ -460,10 +461,6 @@ function clickBackground() {
       htmlContent += "<h5>Published " + nodes.date + "<\/h5>"
       htmlContent += "<a class=\"links\" href=" + nodes.goodreads + ">goodreads<\/a>  |  <a class=\"links\" href=" + nodes.wikipedia + ">wikipedia<\/a>"  
       
-      
-  
-
-
     //  htmlContent += "<br>"
     //  htmlContent += "<br><br>"
       htmlContent += "<\/div>"
@@ -486,15 +483,11 @@ function clickBackground() {
 
 
 
-// test build tooltip overlay click to close
-    var tooltipBg = d3
-  .select(".tooltip-overlay")
-  .on("click", clickBackground);
-var tooltip = d3.select(".tooltip");
+
+
 
 
 /* 
-
   // build a dictionary of nodes that are linked
   var linkedByIndex = {};
     links.forEach(function(d) {
