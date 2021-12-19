@@ -38,10 +38,17 @@
                 html {
                   background-color: rgb(4, 0, 15);
                   color: rgb(238, 238, 238);
-                 
+                 overflow: auto;
+                 background-image: url("tiled starfield_Credit-Peter-Yeager.svg");
+                background-color: #000000;
+                background-size: 1200px 561px; 
+                background-repeat: repeat;
                 }
 
 
+     /*            body {
+                  background-color: rgba(4, 0, 15, 0.698);
+                } */
   
 
                  h2 {
@@ -92,8 +99,8 @@
                     font-family: roboto;
                 }
 
-                .svg-container {
-                 overflow: scroll;
+                .svgContainer {
+              overflow: visible;
                 }
 
 
@@ -110,10 +117,45 @@
                     cursor: pointer;
                   }
 
+                  .black-card {
+                    z-index: 100;
+                  }
+
                   .svgContainer {
                     display: block;
                     margin: auto;
+                    opacity:0;
+                    animation: fadein 4s forwards;
+                    animation-delay: 2.5s;
+                    
                   }
+                  @keyframes fadein {
+                      from {
+                          opacity:0;
+                      }
+                      to {
+                          opacity:1;
+                      }
+                  }
+
+
+                  .screen {
+                 
+                    animation: screenfadein 8s forwards;
+                    animation-delay: 0s;
+                    background-color: black;
+                    
+                  }
+                  @keyframes screenfadein {
+                      from {
+                        background-color: black;
+                      }
+                      to {
+                        background-color: rgba(0, 0, 0, 0.37);
+                      }
+                  }
+
+
 
                   .card {
                     background-color: #000;
@@ -144,15 +186,18 @@
 
         </style>
 
-    </head>
-    <body>
+</head>
+
+
+
+  <body class="screen">
         
       
       
-      <div class="totalWidth columns p-3">
+      <div class="totalWidth is-marginless columns p-3">
         <div class="column is-3-desktop is-2-tablet">
        </div> 
-       <div class="column is-6-desktop is-8-tablet">   
+       <div class="column is-6-desktop is-8-tablet black-card">   
       <div class="card mt-4">
        <div class="card-content">
          <div class="content">
@@ -174,12 +219,12 @@
 
 
 
-
-       
+      <div class="screen">
+    </div>
       
-       <div class="svg-container">
 
-      <svg class="svgContainer" width="1700" height="1450">
+
+      <svg class="svgContainer" width="1600" height="1450">
           <filter x="0" y="0" width="1" height="1" id="removebackground">
             <feFlood flood-color="black" flood-opacity="0.65"/>
             <feComposite in="SourceGraphic"/>
@@ -193,7 +238,6 @@
         </svg>
 
       </div>
-
 
 
 
@@ -213,27 +257,41 @@ $('#clickchecker').click(function(event){
   event.stopPropagation();
 });
 
-
-
-
-
             const svg = d3.select("svg");
-            const w = 1700;
+            const w = 1600;
             const h= 1450; 
-          //const myColor = d3.scaleOrdinal(d3.schemeTableau10);
-            var color = d3.scaleOrdinal([`#000000`, `#00BEDD`]);
+
            
+
+
+            
+          //const myColor = d3.scaleOrdinal(d3.schemeTableau10);
+            var color = d3.scaleOrdinal([`#00BEDD`, `#000000`]);
+            var strokes = d3.scaleOrdinal([`#000000`, `#FFBDAE`]);
+            var strokesWidth = d3.scaleOrdinal([0, 2]);
+
+            // for gas nodes
+            var category = d3.scaleOrdinal([1, 45]);
+            var fontSize = d3.scaleOrdinal([`15px`, `20px`]);
+            var fontColor = d3.scaleOrdinal([``, `#ffd9b9`]);
+            var labelWidth = d3.scaleOrdinal([`100px`, `150px`]);
+
+
+//saved for revert, trying to remove DUMMY NODE
+/*  //const myColor = d3.scaleOrdinal(d3.schemeTableau10);
+ var color = d3.scaleOrdinal([`#000000`, `#00BEDD`]);
             var strokes = d3.scaleOrdinal([`#FFBDAE`, `#000000`]);
             var strokesWidth = d3.scaleOrdinal([2, 0]);
 
             // for gas nodes
             var category = d3.scaleOrdinal([45, 1]);
-
             var fontSize = d3.scaleOrdinal([`20px`, `15px`]);
             var fontColor = d3.scaleOrdinal([`#ffd9b9`, ``]);
+            var labelWidth = d3.scaleOrdinal([`150px`, `100px`]); */
 
 
-            var labelWidth = d3.scaleOrdinal([`150px`, `100px`]);
+
+
 
            //wrap text vars
            //top number is vertical position
@@ -281,7 +339,7 @@ $('#clickchecker').click(function(event){
         }))
                        
                                 // turn this on to keep the sim running
-                                // .alphaTarget(.002)
+                               //.alphaTarget(.002)
                                 .force("center", d3.forceCenter().x(w/2).y(h/2).strength(.05))
                                 .force("collide",d3.forceCollide().radius(90).strength(.07));
 
@@ -315,14 +373,17 @@ var nodes = svg.selectAll("g.nodes")
   .call(d3.drag() // using .call() to call our drag event
                                 .on("start", dragstarted)
                                 .on("drag", dragged)
-
                                 .on("end", dragended))
 
-                            //    .on("mouseover", mouseover)
+                             // original hover-over   
+                             //   .on("mouseover", mouseover)
                             //     .on("mouseout", mouseout)
+
+                            .on("mouseover", mouseOver(.4))
+                            .on("mouseout", mouseOut);
                                 
   
-
+  // nodes.on("mouseover", focus).on("mouseout", unfocus);
 
      //visible node gas                    
      nodes.append('ellipse')
@@ -359,10 +420,16 @@ var nodes = svg.selectAll("g.nodes")
       .style("fill", "#00bedd") 
       .on("click", clicknode) 
       .style("z-index", "10")
+      
+      //old simpler hover circle
       .on("mouseover", mouseover)
       .on("mouseout", mouseout)
 
-         
+     //hover to fade nodes
+     // .on("mouseover", mouseOver(.2))
+     //   .on("mouseout", mouseOut);
+
+
       //hover over to highlight connected nodes (does not work)
       //  .on("mouseover", mouseOver(.1))
        // .on("mouseout", mouseOut);
@@ -656,7 +723,7 @@ d3.select("body").on("click", function() {
             }
   
 //node hover over events
-            function mouseover() {
+ function mouseover() {
   d3.select(this).transition()
       .duration(250)
       .style("opacity", .3);
@@ -667,6 +734,97 @@ function mouseout() {
       .duration(250)
       .style("opacity", 0);
 }
+
+
+
+
+
+//another attempt at hover over adjacent nodes
+/* 
+function neigh(a, b) {
+    return a == b || adjlist[a + "-" + b];
+}
+
+
+function focus(d) {
+    var index = d3.select(d3.event.target).datum().index;
+    nodes.style("opacity", function(o) {
+        return neigh(index, o.index) ? 1 : 0.1;
+    });
+    labelNode.attr("display", function(o) {
+      return neigh(index, o.node.index) ? "block": "none";
+    });
+    links.style("opacity", function(o) {
+        return o.source.index == index || o.target.index == index ? 1 : 0.1;
+    });
+}
+
+function unfocus() {
+   labelNode.attr("display", "block");
+   node.style("opacity", 1);
+   link.style("opacity", 1);
+}
+ */
+
+
+
+
+//again trying to focus on hover
+
+
+    // build a dictionary of nodes that are linked
+    var linkedByIndex = {};
+    links.forEach(function(d) {
+        linkedByIndex[d.source.index + "," + d.target.index] = 1;
+    });
+
+    // check the dictionary to see if nodes are linked
+    function isConnected(a, b) {
+        return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
+    }
+
+    // fade nodes on hover
+    function mouseOver(opacity) {
+        return function(d) {
+            // check all other nodes to see if they're connected
+            // to this one. if so, keep the opacity at 1, otherwise
+            // fade
+            nodes.style("stroke-opacity", function(o) {
+                thisOpacity = isConnected(d, o) ? 1 : opacity;
+                return thisOpacity;
+            });
+            nodes.style("fill-opacity", function(o) {
+                thisOpacity = isConnected(d, o) ? 1 : opacity;
+                return thisOpacity;
+            });
+            // also style link accordingly
+            links.style("stroke-opacity", function(o) {
+                return o.source === d || o.target === d ? 1 : opacity;
+            });
+            links.style("stroke", function(o){
+                return o.source === d || o.target === d ? o.source.colour : "#ddd";
+            });
+        };
+    }
+    function mouseOut() {
+        nodes.style("stroke-opacity", 1);
+        nodes.style("fill-opacity", 1);
+        links.style("stroke-opacity", 1);
+        links.style("stroke", "#ddd");
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
