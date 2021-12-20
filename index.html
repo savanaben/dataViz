@@ -14,6 +14,93 @@
 
         <style type="text/css">
                 
+
+
+/* css for the tooltip/popover 2 column */
+.column {
+  float: left;
+  width: 50%;
+  padding: 0.5rem;
+}
+
+
+@font-face {
+    font-family: MADSENSE FREE TRIAL;
+    font-weight: bold;
+    src: url("MADSENSE.ttf");
+}
+
+
+.heroTitle {
+  font-family: MADSENSE FREE TRIAL;
+   font-size: 62px;
+   line-height: 1.08;
+    margin: 1rem 0 2rem 0;
+     color: #7afff3;
+      font-weight: 500;
+
+}
+
+
+.creditLine {
+   color: #90c0ff;
+    font-weight: 400;
+    font-size: 24px;
+    margin: 1rem 0 2rem 0;
+    line-height: 1.4;
+    font-style: italic;
+    font-family: 'Roboto Condensed';
+}
+
+
+
+
+.left {
+  width: 50%;
+  line-height: 0;
+}
+
+.right {
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+a {
+    color: #c271ff;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ff9af3;
+}
+
+
+.content table th {
+    color: #e2e2e2;
+}
+.content table td, .content table th {
+    border: 1px solid #565656;
+    border-width: 0 0 1px;
+    padding: 0.5em 0.75em;
+    color: #e2e2e2;
+    vertical-align: top;
+}
+
+.subtle {
+    text-align: center;
+    font-style: italic;
+    font-weight: 300;
+    color: #b3b3b3;
+}
+
                 .links line {
                   stroke: #999;
                   stroke-opacity: 0.6;
@@ -117,6 +204,10 @@
                     cursor: pointer;
                   }
 
+                  #hoverdots {
+                    cursor: pointer;
+                  }
+
                   .black-card {
                     z-index: 100;
                   }
@@ -125,8 +216,8 @@
                     display: block;
                     margin: auto;
                     opacity:0;
-                    animation: fadein 4s forwards;
-                    animation-delay: 2.5s;
+                    animation: fadein 8s forwards;
+                    animation-delay: 3s;
                     
                   }
                   @keyframes fadein {
@@ -151,7 +242,7 @@
                         background-color: black;
                       }
                       to {
-                        background-color: rgba(0, 0, 0, 0.37);
+                        background-color: rgba(0, 0, 0, 0.55);
                       }
                   }
 
@@ -164,7 +255,7 @@
 
                   .tooltips2 {
                     background-color: #090020;
-                    padding: 1rem;
+                    padding: 0.5rem;
                     border-radius: 6px;
                     box-shadow: "0px 0px 29px 15px #000000";
                     border: 4px solid #1763ed;
@@ -172,8 +263,8 @@
                   
 
             .tooltip-overlay {
-              position: absolute;
-              width: 100vw;
+              position: fixed;
+              width: 99vw;
               height: 100vh;
               top: 0;
               left: 0;
@@ -201,11 +292,21 @@
       <div class="card mt-4">
        <div class="card-content">
          <div class="content">
-           <h2 class="title is-2 has-text-centered"	>
+           <div class="heroTitle   has-text-centered"	>
              Science Fiction Explorer
-           </h2>
+           </div>
+            <div class="creditLine has-text-centered"	>
+              Dataset collected by Dr. Kathleen M. Carley <br>
+Visualization by Ben Gross
+            </div>
      <p>
-      Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially un 
+      This network visualization clusters popular science fiction novels around the sub-genres they most relate to, as ranked in Kathleen Carley’s 2016 <a href="http://www.casos.cs.cmu.edu/tools/datasets/internal/index.php">Sci-Fi Books dataset</a>. Heavier lines between two nodes indicate a stronger relationship. Larger book nodes indicate greater book popularity around 2016 (as ranked by a books inclusion in “top N lists” of the time). 
+    </p>
+    <p>
+      See <a href="#anchor">below</a> for the full methodology and attributions. 
+     </p>
+     <p class="">
+      This viz should be viewed on large devices, fullscreened. 
      </p>
          </div>
        </div>
@@ -220,11 +321,11 @@
 
 
       <div class="screen">
-    </div>
+     </div>
       
 
 
-      <svg class="svgContainer" width="1600" height="1450">
+      <svg class="svgContainer" width="1600" height="1550">
           <filter x="0" y="0" width="1" height="1" id="removebackground">
             <feFlood flood-color="black" flood-opacity="0.65"/>
             <feComposite in="SourceGraphic"/>
@@ -245,6 +346,78 @@
         <div class="tooltip-overlay"></div>
 
 
+        <div class="totalWidth is-marginless mt-4 columns p-3">
+          <div class="column is-3-desktop is-2-tablet">
+         </div> 
+         <div class="column is-6-desktop is-8-tablet black-card">   
+        <div class="card mt-4">
+         <div class="card-content">
+           <div class="content">
+             <h2 id="anchor" class=" has-text-centered"	>
+               Methodology
+             </h2>
+       <p>
+        To determine how related a book was to a sub-genre, each book was first read by two people. They then came to consensus on how related their book was to each sub-genre using the following scale. 
+      </p>
+
+      <table style="width:100%">
+        <tr>
+          <th>Viz Lines</th>
+          <th>Ranking</th>
+          <th>Description</th>
+      
+        </tr>
+        <tr>
+          <td>No line</td>
+          <td>0</td>
+          <td>Category not present</td>
+      
+        </tr>
+        <tr>
+          <td>Faint line</td>
+          <td>1</td>
+          <td>Category present but preipheral</td>
+       
+        </tr>
+          <tr>
+          <td>Medium line</td>
+          <td>2</td>
+          <td>Category present at a stronger level but not strongly integral to the story</td>
+      
+      
+          <tr>
+          <td>Heavy line</td>
+          <td>3</td>
+          <td>Category present, strong, and integral to the story</td>
+        </tr>
+        
+      </table>
+      
+      <p>
+        This data was processed in D3.js using a force-directed graph. In general, books with a 3 ranking are 3x as attractive to the associated sub-genre compared to books with a 1 ranking.  
+      </p>
+      <p>
+        Thanks to Peter Yeager for the starry background, Nicole Cote for the critique, and so many creators on observable (
+          <a href="https://bl.ocks.org/martinjc/7aa53c7bf3e411238ac8aef280bd6581">Martin Chorley</a>,
+          <a href="http://bl.ocks.org/sathomas/774d02a21dc1c714def8">Stephen Thomas</a>, and
+          <a href="https://bl.ocks.org/mbostock/4062045">Mike Bostock</a>
+         to name a few) who led the way with great examples to pull from.
+      </p>
+
+
+
+
+   
+           </div>
+         </div>
+       </div>
+          </div>  
+          <div class="column is-3-desktop is-2-tablet">
+         </div> 
+         </div>
+
+
+
 
 
         <script type="text/javascript">
@@ -259,7 +432,7 @@ $('#clickchecker').click(function(event){
 
             const svg = d3.select("svg");
             const w = 1600;
-            const h= 1450; 
+            const h= 1550; 
 
            
 
@@ -321,7 +494,7 @@ $('#clickchecker').click(function(event){
                 const dataset = {
                  
                  
-                  "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name, "group": +d.group, "frequency": +d.frequency, "author": d.author, "goodreads": d.goodreads,  "wikipedia": d.wikipedia, "date": d.date}}),
+                  "nodes": files[0].map(d => { return {"id": +d.id, "name": d.name, "group": +d.group, "frequency": +d.frequency, "images": d.images, "author": d.author, "goodreads": d.goodreads,  "wikipedia": d.wikipedia, "date": d.date}}),
                   "links": files[1].map(d => { return {"source": +d.source, "target": +d.target, "weight": +d.weight}})
                 };
                  console.log(dataset)
@@ -339,7 +512,7 @@ $('#clickchecker').click(function(event){
         }))
                        
                                 // turn this on to keep the sim running
-                               //.alphaTarget(.002)
+                                .alphaTarget(.002)
                                 .force("center", d3.forceCenter().x(w/2).y(h/2).strength(.05))
                                 .force("collide",d3.forceCollide().radius(90).strength(.07));
 
@@ -377,10 +550,11 @@ var nodes = svg.selectAll("g.nodes")
 
                              // original hover-over   
                              //   .on("mouseover", mouseover)
-                            //     .on("mouseout", mouseout)
+                             //   .on("mouseout", mouseout)
 
-                            .on("mouseover", mouseOver(.4))
-                            .on("mouseout", mouseOut);
+                            // trying to have hover fade/highlgiuht adjacent nodes
+                            //.on("mouseover", mouseOver(.4))
+                           // .on("mouseout", mouseOut);
                                 
   
   // nodes.on("mouseover", focus).on("mouseout", unfocus);
@@ -414,8 +588,13 @@ var nodes = svg.selectAll("g.nodes")
 
 // touch target node
       nodes.append('circle')
-      .attr("r", 25)  
-      .attr("class", "dots")
+      .attr("r", 28)  
+      .attr("id", "hoverdots")
+
+       // this gives the dots a unique ID, but I don't kow how to link the hoverover of one thing to the id
+     //.attr("id", function(d){return "node" + d.id;})
+
+
       .style("opacity", 0) 
       .style("fill", "#00bedd") 
       .on("click", clicknode) 
@@ -461,12 +640,19 @@ var nodes = svg.selectAll("g.nodes")
               .attr("width", function(d) { return labelWidth(d.group); })
               .attr("height", "55")
               .on("click", clicknode) 
+
               .style("line-height", "1")
               .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
               //the second number here is vertical position
               .attr("y", function(d) { return d.children || d._children ? -40 : -9; })
+              
+              
               .append("xhtml:wrapclass")
               .style("font-size", function(d) { return fontSize(d.group); })
+              
+              //wont work because i need to target the book and category nodes seperately
+              //.on("mouseover", mouseoverText)
+              //.on("mouseout", mouseoutText)
               .style("color", function(d) { return fontColor(d.group); })
               .attr("xmlns", "http://www.w3.org/1999/xhtml")
               .html(function(d){ return  d.name ; });
@@ -507,7 +693,8 @@ var nodes = svg.selectAll("g.nodes")
     .style("top", `${event.pageY}px`)
     .transition().duration(1).style("visibility", "visible")
     .transition().duration(300).style("opacity", 1)
-    .style("display", "block");
+    .style("display", "block")
+    .style("position", "absolute");
 
   // d3.event.stopPropagation();
      loadTooltipContent(nodes);
@@ -537,14 +724,26 @@ function clickBackground() {
   function loadTooltipContent(nodes) {
       var htmlContent = "<div class=\"tooltips2\">"
         htmlContent += "<div id=\"clickchecker\">"
+      htmlContent += "<div class=\"row\">"
+
+      htmlContent += "<div class=\"column left\">"
+      htmlContent += "<img src=" + nodes.images + ">"
+      htmlContent += "<\/div>"
+
+
+      htmlContent += "<div class=\"column right\">"
       htmlContent += "<h3>" + nodes.name + "<\/h3>"
       htmlContent += "<h4>by " + nodes.author + "<\/h4>"
       htmlContent += "<h5>Published " + nodes.date + "<\/h5>"
-      htmlContent += "<a class=\"links\" href=" + nodes.goodreads + ">goodreads<\/a>  |  <a class=\"links\" href=" + nodes.wikipedia + ">wikipedia<\/a>"  
+      htmlContent += "<a class=\"links\" target=\"_blank\" href=" + nodes.goodreads + ">goodreads<\/a>  |  <a class=\"links\" target=\"_blank\" href=" + nodes.wikipedia + ">wikipedia<\/a>"  
+       htmlContent += "<\/div>"
       
+      
+       htmlContent += "<\/div>"
     //  htmlContent += "<br>"
     //  htmlContent += "<br><br>"
-      htmlContent += "<\/div>"
+    htmlContent += "<\/div>"
+    htmlContent += "<\/div>"
       tooltip.html(htmlContent);
   }
 
@@ -554,12 +753,12 @@ function clickBackground() {
   var tooltip = d3.select("body")
     .append("div")
     .attr("class", "tooltip")
-    .style("position", "absolute")
+    .style("position", "fixed")
     .style("z-index", "10")
-    .style("width", "250px")
+    .style("width", "400px")
     .style("height", "140px")
     .style("opacity", "0")
-    .style("z-index", "10")
+    .style("z-index", "100")
     .text("");
 
 
@@ -722,20 +921,39 @@ d3.select("body").on("click", function() {
               event.subject.fy = null;
             }
   
-//node hover over events
- function mouseover() {
-  d3.select(this).transition()
+// hover over events for blue node
+function mouseover () {
+  d3.select(this)
+      .transition()
       .duration(250)
-      .style("opacity", .3);
+      .style("opacity", ".4");
 }
+
 
 function mouseout() {
-  d3.select(this).transition()
+  d3.select(this)
+      .transition()
       .duration(250)
-      .style("opacity", 0);
+      .style("opacity", "0");
 }
 
 
+/* // hover over events for text  wont work because i need to target the book and category nodes seperately
+function mouseoverText () {
+  d3.select(this)
+      .transition()
+      .duration(250)
+      .style("color", "#ffffff");
+}
+
+
+function mouseoutText() {
+  d3.select(this)
+      .transition()
+      .duration(250)
+      .style("color", "#b8e5ee");
+}
+ */
 
 
 
