@@ -1,3 +1,12 @@
+Final Project
+===============
+The final project was a force network using d3 and applying a neat science fiction dataset. 
+
+You can check out the [final viz here!](https://savanaben.github.io/dataViz/). 
+
+This repo will no longer be maintained and any updates to the final viz will occur at my [main repo](https://github.com/savanaben/folio). 
+
+
 Week 9 Homework
 ===============
 For week 9 I built on the interactive network file from our previous class to display a network of [barn swallows](https://networkrepository.com/aves-barn-swallow-non-physical.php). 
