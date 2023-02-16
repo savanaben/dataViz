@@ -201,7 +201,7 @@ a:hover {
                 }
 
                 .dots {
-                    cursor: pointer;
+                    cursor: move;
                   }
 
                   #hoverdots {
@@ -452,6 +452,12 @@ $('#clickchecker').click(function(event){
             var fontColor = d3.scaleOrdinal([``, `#ffd9b9`]);
             var labelWidth = d3.scaleOrdinal([`100px`, `150px`]);
 
+            // for hover dot size to be different between categories and nodes
+            var HoverDotSize = d3.scaleOrdinal([28, 0]);
+
+            // for the label click targets, this controls if there is no target or a target based on csv group
+            var labelClickTargetWidth = d3.scaleOrdinal([`100px`, 0]);
+            var labelClickTargetHeight = d3.scaleOrdinal([`36px`, 0]);
 
 //saved for revert, trying to remove DUMMY NODE
 /*  //const myColor = d3.scaleOrdinal(d3.schemeTableau10);
@@ -514,7 +520,7 @@ $('#clickchecker').click(function(event){
             return linkStrengthScale(d.weight);
         }))
                        
-                                // turn this on to keep the sim running
+                                // turn this on to keep the sim running. working value is .002 for alphaTarget
                                 .alphaTarget(.002)
                                 .force("center", d3.forceCenter().x(w/2).y(h/2).strength(.05))
                                 .force("collide",d3.forceCollide().radius(90).strength(.07));
@@ -589,18 +595,56 @@ var nodes = svg.selectAll("g.nodes")
 
 
 
-// touch target node
-      nodes.append('circle')
-      .attr("r", 28)  
-      .attr("id", "hoverdots")
 
-       // this gives the dots a unique ID, but I don't kow how to link the hoverover of one thing to the id
+// this is the object that is for the text label. 
+nodes.append("svg:foreignObject")
+              .attr("width", function(d) { return labelWidth(d.group); })
+              .attr("height", "55")
+              .style("line-height", "1")
+              .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
+              //the second number here is vertical position
+              .attr("y", function(d) { return d.children || d._children ? -40 : -9; })
+              .style("cursor", "move")
+
+              .append("xhtml:wrapclass")
+              .style("font-size", function(d) { return fontSize(d.group); })
+              .style("cursor", "move")
+
+              //wont work because i need to target the book and category nodes seperately
+              //.on("mouseover", mouseoverText)
+              //.on("mouseout", mouseoutText)
+              .style("color", function(d) { return fontColor(d.group); })
+              .attr("xmlns", "http://www.w3.org/1999/xhtml")
+              .html(function(d){ return  d.name ; });
+
+
+
+//this is the object that is clickable. seperate to be able to turn it off/on based on if it's a big or small node. 
+nodes.append("svg:foreignObject")
+              .attr("width", function(d) { return labelClickTargetWidth(d.group); })
+              .attr("height", function(d) { return labelClickTargetHeight(d.group); })
+              .on("click", clicknode) 
+              .style("line-height", "1")
+              .style("cursor", "pointer")
+              .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
+              //the second number here is vertical position
+              .attr("y", function(d) { return d.children || d._children ? -40 : -9; })
+              
+
+
+
+// touch target node
+nodes.append('circle')
+     .attr("r", function(d) { return HoverDotSize (d.group);})
+     .attr("id", "hoverdots")
+
+     // this gives the dots a unique ID, but I don't kow how to link the hoverover of one thing to the id
      //.attr("id", function(d){return "node" + d.id;})
 
 
       .style("opacity", 0) 
       .style("fill", "#00bedd") 
-      .on("click", clicknode) 
+      .on("click", clicknode)
       .style("z-index", "10")
       
       //old simpler hover circle
@@ -615,51 +659,6 @@ var nodes = svg.selectAll("g.nodes")
       //hover over to highlight connected nodes (does not work)
       //  .on("mouseover", mouseOver(.1))
        // .on("mouseout", mouseOut);
-
-
-/*       nodes.append("text")
-      .text(function(d) {
-        return d.name;
-      })
-      .attr("class", "label")
-      .attr('x', 12)
-      .attr('y', 4)
-      .attr("filter", "url(#removebackground)"); */
-
-
-      // original LABELS WORKING
- /*      nodes.append("svg:foreignObject")
-              .attr("width", "100")
-              .attr("height", "55")
-              .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
-              //the second number here is vertical position
-              .attr("y", function(d) { return d.children || d._children ? -40 : -9; })
-              .append("xhtml:wrapclass")
-              .attr("xmlns", "http://www.w3.org/1999/xhtml")
-              .html(function(d){ return  d.name ; });
- */
-
-      nodes.append("svg:foreignObject")
-              .attr("width", function(d) { return labelWidth(d.group); })
-              .attr("height", "55")
-              .on("click", clicknode) 
-
-              .style("line-height", "1")
-              .attr("x", function(d) { return d.children || d._children ? horizontalNodeOffset - 50 : horizontalNodeOffsetLeaf; })
-              //the second number here is vertical position
-              .attr("y", function(d) { return d.children || d._children ? -40 : -9; })
-              
-              
-              .append("xhtml:wrapclass")
-              .style("font-size", function(d) { return fontSize(d.group); })
-              
-              //wont work because i need to target the book and category nodes seperately
-              //.on("mouseover", mouseoverText)
-              //.on("mouseout", mouseoutText)
-              .style("color", function(d) { return fontColor(d.group); })
-              .attr("xmlns", "http://www.w3.org/1999/xhtml")
-              .html(function(d){ return  d.name ; });
-
 
 
 
